@@ -6,6 +6,31 @@ $secondary-color: blue;
 $back-color: #292929;
 
 #app-content {
+    width: 80%;
+    margin: auto;
 
+    .btn {
+        border: 1px solid;
+        text-transform: uppercase;
+        background-color: $primary-color;
+        color: $back-color;
+        width: initial;
+    }
+
+    .sectionWithTitle {
+        border: 1px solid $back-color;
+        border-radius: 5px;
+        h2 {
+            color: $primary-color;
+            background-color: $back-color;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .section-content {
+            padding: 2% 5%;
+        }
+    }
 }
 

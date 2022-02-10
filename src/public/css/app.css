@@ -1,0 +1,32 @@
+#app-content {
+  width: 80%;
+  margin: auto;
+}
+
+#app-content .btn {
+  border: 1px solid;
+  text-transform: uppercase;
+  background-color: white;
+  color: #292929;
+  width: initial;
+}
+
+#app-content .sectionWithTitle {
+  border: 1px solid #292929;
+  border-radius: 5px;
+}
+
+#app-content .sectionWithTitle h2 {
+  color: white;
+  background-color: #292929;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+#app-content .sectionWithTitle .section-content {
+  padding: 2% 5%;
+}
+
+
