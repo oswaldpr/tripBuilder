@@ -1,28 +1,32 @@
 $font-size: 16px;
 $line-height: 24px;
+$input-label: 20px;
 
-$primary-color: white;
-$secondary-color: blue;
-$back-color: #292929;
+$primary-color: #292929;
+$secondary-color: #FFF;
 
 #app-content {
     width: 80%;
     margin: auto;
 
+    label {
+        color: $primary-color;
+    }
+
     .btn {
-        border: 1px solid;
+        border: 1px solid $primary-color;
         text-transform: uppercase;
-        background-color: $primary-color;
-        color: $back-color;
+        background-color: $secondary-color;
+        color: $primary-color;
         width: initial;
     }
 
     .sectionWithTitle {
-        border: 1px solid $back-color;
+        border: 1px solid $primary-color;
         border-radius: 5px;
         h2 {
-            color: $primary-color;
-            background-color: $back-color;
+            color: $secondary-color;
+            background-color: $primary-color;
             text-transform: uppercase;
             text-align: center;
             line-height: 1.5;
@@ -31,6 +35,36 @@ $back-color: #292929;
         .section-content {
             padding: 2% 5%;
         }
+    }
+    .element-wrapper {
+        .label-wrapper {
+            font-size: $input-label;
+        }
+    }
+
+    .element-wrapper-type {
+        display: block;
+        .label-wrapper-type {
+            font-size: $input-label;
+            width: 30%;
+            float: left;
+        }
+        .input-radio-wrapper {
+            width: 70%;
+            float: left;
+        }
+        .input-radio-element {
+            width: 30%;
+            text-align: center;
+            float: left;
+            input {
+                margin-right: 2%;
+            }
+        }
+    }
+
+    .airport-selection {
+
     }
 }
 
