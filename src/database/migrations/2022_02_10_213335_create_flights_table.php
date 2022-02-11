@@ -15,7 +15,13 @@ return new class extends Migration
     {
         Schema::create('flights', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->text('airline');
+            $table->text('number');
+            $table->text('departure_airport');
+            $table->text('departure_time');
+            $table->text('arrival_airport');
+            $table->text('arrival_time');
+            $table->float('price');
         });
     }
 
