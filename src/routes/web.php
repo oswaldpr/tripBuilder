@@ -15,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [TripController::class, 'index'])->name('home');
+Route::post('/axiosRequest/addStopover', [TripController::class, 'addStopover']);
 

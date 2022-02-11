@@ -13,7 +13,7 @@ $selected = $selected ?? '';
     <div class="col-12 input-radio-wrapper controls controls-<?php echo $name; ?>">
         <?php
         foreach ($options as $optionKey => $optionValue) {
-            $selectedStr = $selected ? 'selected' : '';
+            $selectedStr = $selected === $optionKey ? 'checked' : '';
             echo '<div class="input-radio-element">';
             echo '<input type="radio" name="' . $name . '" value="' . $optionValue . '" ' . $selectedStr . '/>';
             echo '<label for="' . $name . '">' . $optionValue . '</label>';

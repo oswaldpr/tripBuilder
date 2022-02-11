@@ -62,4 +62,8 @@
   margin-right: 2%;
 }
 
+#app-content #search-trip-form .search-trip-submit-button-group button {
+  margin: 0 5%;
+}
+
 
