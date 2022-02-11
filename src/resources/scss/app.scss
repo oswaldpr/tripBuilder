@@ -64,6 +64,14 @@ $secondary-color: #FFF;
     }
 
     #search-trip-form {
+        .single-stopover {
+            position: relative;
+            .remove-stopover {
+                position: absolute;
+                top: 0;
+                right: -20px;
+            }
+        }
         .search-trip-submit-button-group {
             button {
                 margin: 0 5%;

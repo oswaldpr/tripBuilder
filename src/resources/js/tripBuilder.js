@@ -5,6 +5,9 @@ import axios from "axios";
 
         $body.on('click', "#add-stopover", addStopover);
 
+        $body.on('click', ".remove-stopover", function () {
+            removeStopover($(this));
+        });
     });
 }(jQuery));
 
@@ -17,7 +20,12 @@ export function axiosOperation(serviceRoute, serviceData = '') {
             params.append(key, JSON.stringify(value));
         }
     }
-
+    // const config = {
+    //     headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded'
+    //     }
+    // }
+    // debugger
     return axios.post(serviceRoute, params)
         .then(function (apiOutput) {
             return apiOutput.data;
@@ -39,4 +47,30 @@ async function addStopover(){
             $("#add-stopover").addClass('disabled')
         }
     }
+}
+
+async function removeStopover($this){
+    const $form = $this.closest('form');
+    const $parent = $this.parent();
+    const $current = $parent.data('stopover');
+    let formData = getFormDataObj($this);
+    formData['stopover'] = parseFloat($current);
+    formData['formData'] = $form.serialize();
+    const subView = await axiosOperation('/axiosRequest/removeStopover', formData);
+    debugger
+    // $('#stopover-list').replaceWith(subView);
+}
+
+function getFormDataObj($this){
+    const $form = $this.closest('form');
+    const formData = $form.serialize();
+    const formDataArr = typeof formData === 'string' ? formData.split('&') : [];
+    let data = {};
+    // if(formDataArr.length > 0){
+    //     formDataArr.forEach(param => {
+    //         const paramDefinition = param.split('=');
+    //         data[paramDefinition[0]] = paramDefinition[1];
+    //     })
+    // }
+    return data;
 }

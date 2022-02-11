@@ -11,7 +11,7 @@ $selected = $selected ?? '';
         <label for=<?php echo $name; ?>><?php echo $label; ?> </label>
     </div>
     <div class="col-6 select-wrapper controls controls-<?php echo $name; ?>">
-        <select class="form-control" id="address_unitType" name="<?php echo $name; ?>" tabindex="-1">
+        <select class="form-control" name="<?php echo $name; ?>" tabindex="-1">
             <?php
             foreach ($options as $optionKey => $optionValue) {
                 $selectedStr = $selected ? 'selected' : '';

@@ -24,4 +24,18 @@ class TripController extends Controller
         }
         return $view;
     }
+
+    public function removeStopover(Request $request)
+    {
+        $view = '';
+        $stopoverToRemove = (int)$request->stopover;
+        $formData = RequestController::getFormDataParameters($request);
+        $stopoverArray = $formData['stopover'];
+        $stopoverList = array_splice($stopoverArray, $stopoverToRemove, 1);
+
+        if($stopoverToRemove){
+            $view = view('templates.stopoverList', ['stopoverList' => $stopoverList]);
+        }
+        return $view;
+    }
 }

@@ -1,10 +1,9 @@
 <?php
 use App\Models\Airport;
 
-/** @var  int $nbStopover */
 /** @var  $stopoverList */
 
-$nbStopover = $nbStopover ?? 0;
+$nbStopover = 0;
 $stopoverList = $stopoverList ?? [];
 $airports = Airport::getAirportSelectList();
 ?>

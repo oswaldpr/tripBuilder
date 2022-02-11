@@ -2249,6 +2249,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   $(document).ready(function () {
     var $body = $("body");
     $body.on('click', "#add-stopover", addStopover);
+    $body.on('click', ".remove-stopover", function () {
+      removeStopover($(this));
+    });
   });
 })(jQuery); // SERVICE EXECUTION SECTION
 
@@ -2265,7 +2268,13 @@ function axiosOperation(serviceRoute) {
 
       params.append(key, JSON.stringify(value));
     }
-  }
+  } // const config = {
+  //     headers: {
+  //         'Content-Type': 'application/x-www-form-urlencoded'
+  //     }
+  // }
+  // debugger
+
 
   return axios__WEBPACK_IMPORTED_MODULE_1___default().post(serviceRoute, params).then(function (apiOutput) {
     return apiOutput.data;
@@ -2316,6 +2325,54 @@ function _addStopover() {
     }, _callee);
   }));
   return _addStopover.apply(this, arguments);
+}
+
+function removeStopover(_x) {
+  return _removeStopover.apply(this, arguments);
+}
+
+function _removeStopover() {
+  _removeStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2($this) {
+    var $form, $parent, $current, formData, subView;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            $form = $this.closest('form');
+            $parent = $this.parent();
+            $current = $parent.data('stopover');
+            formData = getFormDataObj($this);
+            formData['stopover'] = parseFloat($current);
+            formData['formData'] = $form.serialize();
+            _context2.next = 8;
+            return axiosOperation('/axiosRequest/removeStopover', formData);
+
+          case 8:
+            subView = _context2.sent;
+            debugger; // $('#stopover-list').replaceWith(subView);
+
+          case 10:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+  return _removeStopover.apply(this, arguments);
+}
+
+function getFormDataObj($this) {
+  var $form = $this.closest('form');
+  var formData = $form.serialize();
+  var formDataArr = typeof formData === 'string' ? formData.split('&') : [];
+  var data = {}; // if(formDataArr.length > 0){
+  //     formDataArr.forEach(param => {
+  //         const paramDefinition = param.split('=');
+  //         data[paramDefinition[0]] = paramDefinition[1];
+  //     })
+  // }
+
+  return data;
 }
 
 /***/ }),
