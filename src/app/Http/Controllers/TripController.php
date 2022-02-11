@@ -15,6 +15,11 @@ class TripController extends Controller
         return view('home', ['type' => $type, 'airports' => $airports]);
     }
 
+    public function getAddStopoverBtn()
+    {
+        return view('templates.addStopoverBtn');
+    }
+
     public function addStopover(Request $request)
     {
         $view = '';

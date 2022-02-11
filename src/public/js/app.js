@@ -2248,8 +2248,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 (function ($) {
   $(document).ready(function () {
     var $body = $("body");
-    $body.on('click', "#add-stopover", addStopover);
-    $body.on('click', ".remove-stopover", function () {
+    $body.on("change", ".input-type", function () {
+      changeFlightType($(this));
+    });
+    $body.on("click", "#add-stopover", addStopover);
+    $body.on("click", ".remove-stopover", function () {
       removeStopover($(this));
     });
   });
@@ -2268,13 +2271,7 @@ function axiosOperation(serviceRoute) {
 
       params.append(key, JSON.stringify(value));
     }
-  } // const config = {
-  //     headers: {
-  //         'Content-Type': 'application/x-www-form-urlencoded'
-  //     }
-  // }
-  // debugger
-
+  }
 
   return axios__WEBPACK_IMPORTED_MODULE_1___default().post(serviceRoute, params).then(function (apiOutput) {
     return apiOutput.data;
@@ -2284,32 +2281,91 @@ function axiosOperation(serviceRoute) {
   });
 }
 
+function changeFlightType(_x) {
+  return _changeFlightType.apply(this, arguments);
+}
+
+function _changeFlightType() {
+  _changeFlightType = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee($this) {
+    var $parent, $inputChecked, subView;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            $parent = $this.closest('.element-wrapper-type');
+            $inputChecked = $parent.find('input:checked');
+
+            if (!($inputChecked.val() === 'multi-destination')) {
+              _context.next = 12;
+              break;
+            }
+
+            _context.next = 5;
+            return addStopover();
+
+          case 5:
+            _context.next = 7;
+            return axiosOperation('/axiosRequest/getAddStopoverBtn');
+
+          case 7:
+            subView = _context.sent;
+            $('.add-stopover-btn-wrap').html(subView);
+            $('#nb-stopover').val(1);
+            _context.next = 15;
+            break;
+
+          case 12:
+            $('#stopover-list-content').html('');
+            $('.add-stopover-btn-wrap').html('');
+            $('#nb-stopover').val(0);
+
+          case 15:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+  return _changeFlightType.apply(this, arguments);
+}
+
+function hasRemoveBtnToFirstStopover() {
+  var shouldHave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+  if (shouldHave) {
+    var subView = '<button type="button" class="close remove-stopover" aria-label="Close"><span class="" aria-hidden="true">x</span></button>';
+    $('#stopover-list-content .single-stopover-1 .select-wrapper').append(subView);
+  } else {
+    $('#stopover-list-content .single-stopover-1 .close.remove-stopover').remove();
+  }
+}
+
 function addStopover() {
   return _addStopover.apply(this, arguments);
 }
 
 function _addStopover() {
-  _addStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+  _addStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
     var nbStopoverVal, subView, newNb;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
             nbStopoverVal = parseInt($('#nb-stopover').val());
 
             if (!(nbStopoverVal < 5)) {
-              _context.next = 9;
+              _context2.next = 9;
               break;
             }
 
-            _context.next = 4;
+            _context2.next = 4;
             return axiosOperation('/axiosRequest/addStopover', {
               'nbStopover': nbStopoverVal
             });
 
           case 4:
-            subView = _context.sent;
-            $('#stopover-list').append(subView);
+            subView = _context2.sent;
+            $('#stopover-list-content').append(subView);
             newNb = nbStopoverVal + 1;
             $('#nb-stopover').val(newNb);
 
@@ -2319,60 +2375,56 @@ function _addStopover() {
 
           case 9:
           case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-  return _addStopover.apply(this, arguments);
-}
-
-function removeStopover(_x) {
-  return _removeStopover.apply(this, arguments);
-}
-
-function _removeStopover() {
-  _removeStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2($this) {
-    var $form, $parent, $current, formData, subView;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            $form = $this.closest('form');
-            $parent = $this.parent();
-            $current = $parent.data('stopover');
-            formData = getFormDataObj($this);
-            formData['stopover'] = parseFloat($current);
-            formData['formData'] = $form.serialize();
-            _context2.next = 8;
-            return axiosOperation('/axiosRequest/removeStopover', formData);
-
-          case 8:
-            subView = _context2.sent;
-            debugger; // $('#stopover-list').replaceWith(subView);
-
-          case 10:
-          case "end":
             return _context2.stop();
         }
       }
     }, _callee2);
+  }));
+  return _addStopover.apply(this, arguments);
+}
+
+function removeStopover(_x2) {
+  return _removeStopover.apply(this, arguments);
+}
+
+function _removeStopover() {
+  _removeStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3($this) {
+    var $form, $parent, $current, formData, subView;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            $form = $this.closest('form');
+            $parent = $this.parent();
+            $current = $parent.data('stopover');
+            formData = {};
+            formData['stopover'] = parseFloat($current);
+            formData['formData'] = getFormDataObj($form);
+            _context3.next = 8;
+            return axiosOperation('/axiosRequest/removeStopover', formData);
+
+          case 8:
+            subView = _context3.sent;
+            debugger; // $('#stopover-list').replaceWith(subView);
+
+          case 10:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
   }));
   return _removeStopover.apply(this, arguments);
 }
 
 function getFormDataObj($this) {
   var $form = $this.closest('form');
-  var formData = $form.serialize();
-  var formDataArr = typeof formData === 'string' ? formData.split('&') : [];
-  var data = {}; // if(formDataArr.length > 0){
-  //     formDataArr.forEach(param => {
-  //         const paramDefinition = param.split('=');
-  //         data[paramDefinition[0]] = paramDefinition[1];
-  //     })
-  // }
-
-  return data;
+  var formArray = $form.serializeArray();
+  var formData = {};
+  $.map(formArray, function (n, i) {
+    formData[n['name']] = n['value'];
+  });
+  return formData;
 }
 
 /***/ }),

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [TripController::class, 'index']);
+Route::post('/axiosRequest/getAddStopoverBtn', [TripController::class, 'getAddStopoverBtn']);
 Route::post('/axiosRequest/addStopover', [TripController::class, 'addStopover']);
 Route::post('/axiosRequest/removeStopover', [TripController::class, 'removeStopover']);
 

@@ -8,9 +8,11 @@ $stopoverList = $stopoverList ?? [];
 $airports = Airport::getAirportSelectList();
 ?>
 <div id="stopover-list">
-    @foreach($stopoverList as $index => $stopover)
-        @include('templates.newStopover', ['nbStopover' => $index, 'airports' => $airports]);
-        <?php $nbStopover++; ?>
-    @endforeach
+    <div id="stopover-list-content">
+        @foreach($stopoverList as $index => $stopover)
+            @include('templates.newStopover', ['nbStopover' => $index, 'airports' => $airports]);
+            <?php $nbStopover++; ?>
+        @endforeach
+    </div>
     <input type="hidden" id="nb-stopover" value="<?php echo $nbStopover; ?>" name="nb-stopover">
 </div>

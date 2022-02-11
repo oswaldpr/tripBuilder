@@ -3,9 +3,13 @@ import axios from "axios";
     $(document).ready(function () {
         const $body = $("body");
 
-        $body.on('click', "#add-stopover", addStopover);
+        $body.on("change", ".input-type", function () {
+            changeFlightType($(this));
+        });
 
-        $body.on('click', ".remove-stopover", function () {
+        $body.on("click", "#add-stopover", addStopover);
+
+        $body.on("click", ".remove-stopover", function () {
             removeStopover($(this));
         });
     });
@@ -16,16 +20,11 @@ export function axiosOperation(serviceRoute, serviceData = '') {
     let params = new URLSearchParams();
 
     if(serviceData){
-        for (const [key, value] of Object.entries(serviceData)) {
+        for (let [key, value] of Object.entries(serviceData)) {
             params.append(key, JSON.stringify(value));
         }
     }
-    // const config = {
-    //     headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded'
-    //     }
-    // }
-    // debugger
+
     return axios.post(serviceRoute, params)
         .then(function (apiOutput) {
             return apiOutput.data;
@@ -36,12 +35,36 @@ export function axiosOperation(serviceRoute, serviceData = '') {
         });
 }
 
+async function changeFlightType($this){
+    const $parent = $this.closest('.element-wrapper-type');
+    const $inputChecked = $parent.find('input:checked');
+    if($inputChecked.val() === 'multi-destination'){
+        await addStopover();
+        const subView = await axiosOperation('/axiosRequest/getAddStopoverBtn');
+        $('.add-stopover-btn-wrap').html(subView);
+        $('#nb-stopover').val(1);
+    } else {
+        $('#stopover-list-content').html('');
+        $('.add-stopover-btn-wrap').html('');
+        $('#nb-stopover').val(0);
+    }
+}
+
+function hasRemoveBtnToFirstStopover(shouldHave = true){
+    if(shouldHave){
+        const subView = '<button type="button" class="close remove-stopover" aria-label="Close"><span class="" aria-hidden="true">x</span></button>'
+        $('#stopover-list-content .single-stopover-1 .select-wrapper').append(subView);
+    } else {
+        $('#stopover-list-content .single-stopover-1 .close.remove-stopover').remove();
+    }
+}
+
 async function addStopover(){
     const nbStopoverVal = parseInt($('#nb-stopover').val());
     if(nbStopoverVal < 5){
         const subView = await axiosOperation('/axiosRequest/addStopover', {'nbStopover': nbStopoverVal});
-        $('#stopover-list').append(subView);
-        const newNb = nbStopoverVal + 1
+        $('#stopover-list-content').append(subView);
+        const newNb = nbStopoverVal + 1;
         $('#nb-stopover').val(newNb);
         if(newNb >= 5){
             $("#add-stopover").addClass('disabled')
@@ -53,9 +76,9 @@ async function removeStopover($this){
     const $form = $this.closest('form');
     const $parent = $this.parent();
     const $current = $parent.data('stopover');
-    let formData = getFormDataObj($this);
+    let formData = {};
     formData['stopover'] = parseFloat($current);
-    formData['formData'] = $form.serialize();
+    formData['formData'] = getFormDataObj($form);
     const subView = await axiosOperation('/axiosRequest/removeStopover', formData);
     debugger
     // $('#stopover-list').replaceWith(subView);
@@ -63,14 +86,12 @@ async function removeStopover($this){
 
 function getFormDataObj($this){
     const $form = $this.closest('form');
-    const formData = $form.serialize();
-    const formDataArr = typeof formData === 'string' ? formData.split('&') : [];
-    let data = {};
-    // if(formDataArr.length > 0){
-    //     formDataArr.forEach(param => {
-    //         const paramDefinition = param.split('=');
-    //         data[paramDefinition[0]] = paramDefinition[1];
-    //     })
-    // }
-    return data;
+    let formArray = $form.serializeArray();
+    let formData = {};
+
+    $.map(formArray, function(n, i){
+        formData[n['name']] = n['value'];
+    });
+
+    return formData;
 }

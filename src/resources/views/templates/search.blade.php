@@ -15,11 +15,7 @@
                 @include('templates.stopoverList')
                 @include('templates.elements.selectElement', ['name' => 'arrival_airport', 'label' => 'Arrival airport', 'options' => $airports])
             </div>
-            <div class="destination-actions col-2">
-                <button type="button" id="add-stopover" class="btn btn-default pull-right">
-                    <?php echo __('Add stopover')?>
-                </button>
-            </div>
+            <div class="add-stopover-btn-wrap col-2"></div>
         </div>
 
     <div class="search-trip-submit-button-group btn-group-justified text-center">

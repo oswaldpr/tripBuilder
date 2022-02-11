@@ -15,7 +15,7 @@ $selected = $selected ?? '';
         foreach ($options as $optionKey => $optionValue) {
             $selectedStr = $selected === $optionKey ? 'checked' : '';
             echo '<div class="input-radio-element">';
-            echo '<input type="radio" name="' . $name . '" value="' . $optionKey . '" ' . $selectedStr . '/>';
+            echo '<input type="radio" class="input-' . $name . '" name="' . $name . '" value="' . $optionKey . '" ' . $selectedStr . '/>';
             echo '<label for="' . $name . '">' . $optionValue . '</label>';
             echo '</div>';
         }
