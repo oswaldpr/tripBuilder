@@ -12,6 +12,10 @@ import axios from "axios";
         $body.on("click", ".remove-stopover", function () {
             removeStopover($(this));
         });
+
+        $body.on("click", "#searchFlight", function () {
+            searchFlight($(this));
+        });
     });
 }(jQuery));
 
@@ -80,8 +84,7 @@ async function removeStopover($this){
     formData['stopover'] = parseFloat($current);
     formData['formData'] = getFormDataObj($form);
     const subView = await axiosOperation('/axiosRequest/removeStopover', formData);
-    debugger
-    // $('#stopover-list').replaceWith(subView);
+    $('#stopover-list').replaceWith(subView);
 }
 
 function getFormDataObj($this){
@@ -93,5 +96,15 @@ function getFormDataObj($this){
         formData[n['name']] = n['value'];
     });
 
+    return formData;
+}
+
+async function searchFlight($this){
+    const $form = $this.closest('form');
+    let formData = getFormDataObj($this);
+    debugger
+    const subView = await axiosOperation('/axiosRequest/searchFlight', {'formData': formData});
+    debugger
+    $('#stopover-list').replaceWith(subView);
     return formData;
 }

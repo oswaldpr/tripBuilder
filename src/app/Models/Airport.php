@@ -21,11 +21,16 @@ class Airport extends Model
         return $selectList;
     }
 
+    public function flight()
+    {
+        return $this->belongsTo(Flight::class);
+    }
+
     public static function getAirportList()
     {
         $YUL = self::createAirport("YUL", "YMQ", "Pierre Elliott Trudeau International",
             "Montreal","CA","QC",45.457714,-73.749908,"America/Montreal");
-        $YVL = self::createAirport("YVL", "YVL", "Vancouver International",
+        $YVR = self::createAirport("YVR", "YVR", "Vancouver International",
             "Vancouver","CA","BC",49.194698,-123.179192,"America/Vancouver");
         $YVZ = self::createAirport("YVZ", "YTZ", "Toronto Pearson International",
             "Toronto","CA","ON",43.676667,-79.630556,"America/Toronto");
@@ -36,7 +41,7 @@ class Airport extends Model
 
         return array(
             'YUL' => $YUL,
-            'YVL' => $YVL,
+            'YVR' => $YVR,
             'YVZ' => $YVZ,
             'JFK' => $JFK,
             'CDG' => $CDG

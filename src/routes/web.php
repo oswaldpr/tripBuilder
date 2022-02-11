@@ -18,4 +18,5 @@ Route::get('/', [TripController::class, 'index']);
 Route::post('/axiosRequest/getAddStopoverBtn', [TripController::class, 'getAddStopoverBtn']);
 Route::post('/axiosRequest/addStopover', [TripController::class, 'addStopover']);
 Route::post('/axiosRequest/removeStopover', [TripController::class, 'removeStopover']);
+Route::post('/axiosRequest/searchFlight', [TripController::class, 'searchFlight']);
 

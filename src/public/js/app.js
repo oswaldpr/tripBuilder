@@ -2255,6 +2255,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     $body.on("click", ".remove-stopover", function () {
       removeStopover($(this));
     });
+    $body.on("click", "#searchFlight", function () {
+      searchFlight($(this));
+    });
   });
 })(jQuery); // SERVICE EXECUTION SECTION
 
@@ -2405,7 +2408,7 @@ function _removeStopover() {
 
           case 8:
             subView = _context3.sent;
-            debugger; // $('#stopover-list').replaceWith(subView);
+            $('#stopover-list').replaceWith(subView);
 
           case 10:
           case "end":
@@ -2425,6 +2428,41 @@ function getFormDataObj($this) {
     formData[n['name']] = n['value'];
   });
   return formData;
+}
+
+function searchFlight(_x3) {
+  return _searchFlight.apply(this, arguments);
+}
+
+function _searchFlight() {
+  _searchFlight = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4($this) {
+    var $form, formData, subView;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            $form = $this.closest('form');
+            formData = getFormDataObj($this);
+            debugger;
+            _context4.next = 5;
+            return axiosOperation('/axiosRequest/searchFlight', {
+              'formData': formData
+            });
+
+          case 5:
+            subView = _context4.sent;
+            debugger;
+            $('#stopover-list').replaceWith(subView);
+            return _context4.abrupt("return", formData);
+
+          case 9:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4);
+  }));
+  return _searchFlight.apply(this, arguments);
 }
 
 /***/ }),

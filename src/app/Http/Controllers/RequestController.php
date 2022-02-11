@@ -28,7 +28,6 @@ class RequestController extends Controller
     private static function buildChildrenParameter($key, $value)
     {
         $keyArr = explode('][', $key);
-        $indexKey = explode(']', $keyArr[1])[0];
         if(isset($keyArr[1]) && strpos($keyArr[1], '[')){
             $childrenArray = self::buildChildrenParameter($keyArr[1], $value);
         } else {

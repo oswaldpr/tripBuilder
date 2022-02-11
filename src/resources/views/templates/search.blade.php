@@ -19,10 +19,7 @@
         </div>
 
     <div class="search-trip-submit-button-group btn-group-justified text-center">
-        <button type="button" class="btn btn-default">
-            <?php echo __('Clear')?>
-        </button>
-        <button type="button" id="search" class="btn btn-default" @click="search()">
+        <button type="button" id="searchFlight" class="btn btn-default" @click="searchFlight()">
             <?php echo __('Search')?>
         </button>
     </div>

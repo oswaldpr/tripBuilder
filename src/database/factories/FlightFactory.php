@@ -33,6 +33,9 @@ class FlightFactory extends Factory
             'arrival_airport' => $airline->arrival_airport,
             'arrival_time' => $airline->arrival_time,
             'price' => $airline->price,
+            'airline_id' => $airline->airline_id,
+            'departure_airport_id' => $airline->departure_airport_id,
+            'arrival_airport_id' => $airline->arrival_airport_id,
         ];
     }
 }

@@ -11,6 +11,12 @@ class Airline extends Model
 
     public $timestamps = false;
 
+
+    public function flight()
+    {
+        return $this->belongsTo(Flight::class);
+    }
+
     public static function getAirlineList(){
         $AC = self::createAirline('AC', 'Air Canada');
         $AF = self::createAirline('AF','Air France');

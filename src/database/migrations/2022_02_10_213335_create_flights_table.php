@@ -22,6 +22,12 @@ return new class extends Migration
             $table->text('arrival_airport');
             $table->text('arrival_time');
             $table->float('price');
+            $table->unsignedBigInteger('airline_id');
+            $table->foreign('airline_id')->references('id')->on('airlines');
+            $table->unsignedBigInteger('departure_airport_id');
+            $table->foreign('departure_airport_id')->references('id')->on('airports');
+            $table->unsignedBigInteger('arrival_airport_id');
+            $table->foreign('arrival_airport_id')->references('id')->on('airports');
         });
     }
 
