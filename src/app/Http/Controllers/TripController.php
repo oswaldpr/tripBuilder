@@ -35,7 +35,12 @@ class TripController extends Controller
         $nbStopover = (int)$formData['nb_stopover'];
         if($nbStopover <= 5){
             $airportList = Airport::getAirportList();
-            $stopoverArray = $nbStopover === 0 ? [] : $formData['stopover'];
+            $stopoverArray = [];
+            if($nbStopover > 0){
+                foreach ($formData['stopover'] as $stopover){
+                    $stopoverArray[] = $stopover;
+                }
+            }
             $stopoverArray[] = array_key_first($airportList);
             $view = view('templates.stopoverList', ['stopoverList' => $stopoverArray]);
         }
