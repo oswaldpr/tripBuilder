@@ -2251,6 +2251,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     $body.on("change", ".input-type", function () {
       changeFlightType($(this));
     });
+    $body.on("change", "#preferred_airline_check", function () {
+      hasPreferredAirline($(this));
+    });
     $body.on("click", ".trip-datepicker", function () {
       datePickerAction($(this));
     });
@@ -2383,32 +2386,72 @@ function _changeFlightType() {
   return _changeFlightType.apply(this, arguments);
 }
 
-function addStopover(_x2) {
+function hasPreferredAirline(_x2) {
+  return _hasPreferredAirline.apply(this, arguments);
+}
+
+function _hasPreferredAirline() {
+  _hasPreferredAirline = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2($this) {
+    var isChecked, subView;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            isChecked = $this.is(':checked');
+
+            if (!isChecked) {
+              _context2.next = 8;
+              break;
+            }
+
+            _context2.next = 4;
+            return axiosOperation('/axiosRequest/hasPreferredAirline');
+
+          case 4:
+            subView = _context2.sent;
+            $('#preferred-airline').append(subView);
+            _context2.next = 9;
+            break;
+
+          case 8:
+            $('#preferred-airline-select').remove();
+
+          case 9:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+  return _hasPreferredAirline.apply(this, arguments);
+}
+
+function addStopover(_x3) {
   return _addStopover.apply(this, arguments);
 }
 
 function _addStopover() {
-  _addStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2($this) {
+  _addStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3($this) {
     var $form, nbStopoverVal, formData, subView, newNb;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             $form = $this.closest('form');
             nbStopoverVal = parseInt($('#nb_stopover').val());
 
             if (!(nbStopoverVal < 5)) {
-              _context2.next = 11;
+              _context3.next = 11;
               break;
             }
 
             formData = {};
             formData['formData'] = getFormDataObj($form);
-            _context2.next = 7;
+            _context3.next = 7;
             return axiosOperation('/axiosRequest/addStopover', formData);
 
           case 7:
-            subView = _context2.sent;
+            subView = _context3.sent;
             $('#stopover-list').replaceWith(subView);
             newNb = parseInt($('#nb_stopover').val());
 
@@ -2418,24 +2461,24 @@ function _addStopover() {
 
           case 11:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2);
+    }, _callee3);
   }));
   return _addStopover.apply(this, arguments);
 }
 
-function removeStopover(_x3) {
+function removeStopover(_x4) {
   return _removeStopover.apply(this, arguments);
 }
 
 function _removeStopover() {
-  _removeStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3($this) {
+  _removeStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4($this) {
     var $form, $parent, $current, formData, subView;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             $form = $this.closest('form');
             $parent = $this.parent();
@@ -2443,19 +2486,19 @@ function _removeStopover() {
             formData = {};
             formData['stopover'] = parseFloat($current);
             formData['formData'] = getFormDataObj($form);
-            _context3.next = 8;
+            _context4.next = 8;
             return axiosOperation('/axiosRequest/removeStopover', formData);
 
           case 8:
-            subView = _context3.sent;
+            subView = _context4.sent;
             $('#stopover-list').replaceWith(subView);
 
           case 10:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3);
+    }, _callee4);
   }));
   return _removeStopover.apply(this, arguments);
 }
@@ -2470,16 +2513,16 @@ function getFormDataObj($this) {
   return formData;
 }
 
-function searchFlight(_x4) {
+function searchFlight(_x5) {
   return _searchFlight.apply(this, arguments);
 }
 
 function _searchFlight() {
-  _searchFlight = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4($this) {
+  _searchFlight = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5($this) {
     var validDates, validAirports, formData, subView;
-    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
             $('#error-message').html('');
             $('#search-result-list').html('');
@@ -2487,26 +2530,26 @@ function _searchFlight() {
             validAirports = validateAirportList();
 
             if (!(validDates && validAirports)) {
-              _context4.next = 10;
+              _context5.next = 10;
               break;
             }
 
             formData = getFormDataObj($this);
-            _context4.next = 8;
+            _context5.next = 8;
             return axiosOperation('/axiosRequest/searchFlight', {
               'formData': formData
             });
 
           case 8:
-            subView = _context4.sent;
+            subView = _context5.sent;
             $('#search-result-list').html(subView);
 
           case 10:
           case "end":
-            return _context4.stop();
+            return _context5.stop();
         }
       }
-    }, _callee4);
+    }, _callee5);
   }));
   return _searchFlight.apply(this, arguments);
 }

@@ -95,6 +95,11 @@
   margin: 0 5%;
 }
 
+#app-content #preferred-airline-select {
+  width: 50%;
+  margin: auto;
+}
+
 #app-content #search-result-list {
   margin-top: 6%;
 }

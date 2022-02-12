@@ -7,6 +7,10 @@ import axios from "axios";
             changeFlightType($(this));
         });
 
+        $body.on("change", "#preferred_airline_check", function () {
+            hasPreferredAirline($(this));
+        });
+
         $body.on("click", ".trip-datepicker", function () {
             datePickerAction($(this));
         });
@@ -101,6 +105,16 @@ async function changeFlightType($this){
         $('#stopover-list-content').html('');
         $('.add-stopover-btn-wrap').html('');
         $('#nb_stopover').val(0);
+    }
+}
+
+async function hasPreferredAirline($this){
+    const isChecked = $this.is(':checked');
+    if(isChecked){
+        const subView = await axiosOperation('/axiosRequest/hasPreferredAirline');
+        $('#preferred-airline').append(subView);
+    } else {
+        $('#preferred-airline-select').remove();
     }
 }
 

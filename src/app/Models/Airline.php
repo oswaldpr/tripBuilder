@@ -31,6 +31,16 @@ class Airline extends Model
         );
     }
 
+    public static function getAirplineSelectList()
+    {
+        $list = self::getAirlineList();
+        $selectList = array();
+        foreach ($list as $item) {
+            $selectList[$item->code] = $item->name;
+        }
+        return $selectList;
+    }
+
     public static function createAirline($code, $name)
     {
         $airline = new \stdClass();

@@ -9,6 +9,10 @@
         @csrf <!-- {{ csrf_field() }} -->
         <div id="error-message" class="error text-center color-red"></div>
         @include('templates.elements.radioElement', ['name' => 'type', 'label' => 'Flight type', 'options' => $type])
+            <div id="preferred-airline">
+                <input type="checkbox" id="preferred_airline_check" name="airline_check">
+                <span>Preferred airline</span>
+            </div>
         @include('templates.tripDates')
         <div class="clearfix"></div>
         <div class="row col-12">
