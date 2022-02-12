@@ -10,7 +10,7 @@ $airports = Airport::getAirportSelectList();
 <div id="stopover-list">
     <div id="stopover-list-content">
         @foreach($stopoverList as $index => $stopover)
-            @include('templates.newStopover', ['nbStopover' => $index, 'airports' => $airports, 'selected' => $index])
+            @include('templates.newStopover', ['nbStopover' => $index, 'airports' => $airports, 'selected' => $stopover])
             <?php $nbStopover++; ?>
         @endforeach
     </div>

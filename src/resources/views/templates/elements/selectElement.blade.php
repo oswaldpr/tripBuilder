@@ -4,7 +4,7 @@
 /** @var  string $selected */
 /** @var  array $options */
 
-$selected = $selected ?? '';
+$selected = $selected ?? array_key_first($options);
 ?>
 <div class="form-group row element-wrapper element-wrapper-<?php echo $name; ?>">
     <div class="col-6 col-form-label label label-wrapper label-wrapper-<?php echo $name; ?>">
@@ -14,7 +14,7 @@ $selected = $selected ?? '';
         <select class="form-control" name="<?php echo $name; ?>" tabindex="-1">
             <?php
             foreach ($options as $optionKey => $optionValue) {
-                $selectedStr = $selected === $optionKey ? 'selected' : '';
+                $selectedStr = $selected === $optionKey ? 'selected=""' : '';
                 echo '<option value="' . $optionKey . '" ' . $selectedStr . '>' . $optionValue . '</option>';
             }
             ?>

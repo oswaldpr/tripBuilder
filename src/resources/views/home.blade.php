@@ -5,7 +5,6 @@ use App\Models\FlightTrip;
 /** @var  array $airports */
 /** @var  FlightTrip $flightTrip */
 
-
 $flightTrip = $flightTrip ?? null;
 ?>
 @extends('templates.app')

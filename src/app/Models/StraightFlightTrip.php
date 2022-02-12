@@ -23,10 +23,14 @@ class StraightFlightTrip
             $price = 0;
             $totalDuration = 0;
             $flightTitle = '';
+            $isOnlyOneFlight = count($flightTripArray) === 1;
             foreach ($flightTripArray as $flightTrip) {
                 $price = $price + $flightTrip->price;
                 if($flightTitle === ''){
                     $flightTitle = $flightTrip->departureAirportDefinition->city;
+                    if($isOnlyOneFlight){
+                        $flightTitle = $flightTitle . ' to ' . $flightTrip->arrivalAirportDefinition->city;
+                    }
                 } else {
                     $flightTitle = $flightTitle . ' to ' . $flightTrip->arrivalAirportDefinition->city;
                 }

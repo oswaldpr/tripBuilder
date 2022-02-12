@@ -4,7 +4,7 @@
 /** @var  string $selected */
 /** @var  array $options */
 
-$selected = $selected ?? '';
+$selected = $selected ?? array_key_first($options);
 ?>
 <div class="form-group row element-wrapper element-wrapper-<?php echo $name; ?>">
     <div class="col-12 col-form-label label label-wrapper label-wrapper-<?php echo $name; ?>">

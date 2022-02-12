@@ -2254,7 +2254,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     $body.on("click", ".trip-datepicker", function () {
       datePickerAction($(this));
     });
-    $body.on("click", "#add-stopover", addStopover);
+    $body.on("click", "#add-stopover", function () {
+      addStopover($(this));
+    });
     $body.on("click", ".remove-stopover", function () {
       removeStopover($(this));
     });
@@ -2331,38 +2333,37 @@ function _changeFlightType() {
           case 0:
             $parent = $this.closest('.element-wrapper-type');
             $inputChecked = $parent.find('input:checked');
+            $('#returnDate').remove();
 
             if (!($inputChecked.val() === 'multi-destination')) {
-              _context.next = 12;
+              _context.next = 13;
               break;
             }
 
-            _context.next = 5;
-            return addStopover();
+            _context.next = 6;
+            return addStopover($this);
 
-          case 5:
-            _context.next = 7;
+          case 6:
+            _context.next = 8;
             return axiosOperation('/axiosRequest/getAddStopoverBtn');
 
-          case 7:
+          case 8:
             subView = _context.sent;
             $('.add-stopover-btn-wrap').html(subView);
             $('#nb-stopover').val(1);
-            _context.next = 16;
+            _context.next = 17;
             break;
 
-          case 12:
+          case 13:
             if ($inputChecked.val() === 'round-trip') {
               $('#trip-dates').append('<p id="returnDate" class="col-6">Return date: <input type="text" name="returnDate" class="trip-datepicker"/></p>');
-            } else {
-              $('#returnDate').remove();
             }
 
             $('#stopover-list-content').html('');
             $('.add-stopover-btn-wrap').html('');
             $('#nb-stopover').val(0);
 
-          case 16:
+          case 17:
           case "end":
             return _context.stop();
         }
@@ -2372,51 +2373,40 @@ function _changeFlightType() {
   return _changeFlightType.apply(this, arguments);
 }
 
-function hasRemoveBtnToFirstStopover() {
-  var shouldHave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
-  if (shouldHave) {
-    var subView = '<button type="button" class="close remove-stopover" aria-label="Close"><span class="" aria-hidden="true">x</span></button>';
-    $('#stopover-list-content .single-stopover-1 .select-wrapper').append(subView);
-  } else {
-    $('#stopover-list-content .single-stopover-1 .close.remove-stopover').remove();
-  }
-}
-
-function addStopover() {
+function addStopover(_x2) {
   return _addStopover.apply(this, arguments);
 }
 
 function _addStopover() {
-  _addStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-    var nbStopoverVal, subView, newNb;
+  _addStopover = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2($this) {
+    var $form, nbStopoverVal, formData, subView, newNb;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+            $form = $this.closest('form');
             nbStopoverVal = parseInt($('#nb-stopover').val());
 
             if (!(nbStopoverVal < 5)) {
-              _context2.next = 9;
+              _context2.next = 11;
               break;
             }
 
-            _context2.next = 4;
-            return axiosOperation('/axiosRequest/addStopover', {
-              'nbStopover': nbStopoverVal
-            });
+            formData = {};
+            formData['formData'] = getFormDataObj($form);
+            _context2.next = 7;
+            return axiosOperation('/axiosRequest/addStopover', formData);
 
-          case 4:
+          case 7:
             subView = _context2.sent;
-            $('#stopover-list-content').append(subView);
-            newNb = nbStopoverVal + 1;
-            $('#nb-stopover').val(newNb);
+            $('#stopover-list').replaceWith(subView);
+            newNb = parseInt($('#nb-stopover').val());
 
             if (newNb >= 5) {
               $("#add-stopover").addClass('disabled');
             }
 
-          case 9:
+          case 11:
           case "end":
             return _context2.stop();
         }
@@ -2426,7 +2416,7 @@ function _addStopover() {
   return _addStopover.apply(this, arguments);
 }
 
-function removeStopover(_x2) {
+function removeStopover(_x3) {
   return _removeStopover.apply(this, arguments);
 }
 
@@ -2470,7 +2460,7 @@ function getFormDataObj($this) {
   return formData;
 }
 
-function searchFlight(_x3) {
+function searchFlight(_x4) {
   return _searchFlight.apply(this, arguments);
 }
 

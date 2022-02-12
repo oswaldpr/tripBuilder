@@ -7,7 +7,7 @@
 @section('sectionWithTitle-content')
     <form id="search-trip-form" method="post">
         @csrf <!-- {{ csrf_field() }} -->
-        @include('templates.elements.radioElement', ['name' => 'type', 'label' => 'Flight type', 'options' => $type, 'selected' => 'one-way'])
+        @include('templates.elements.radioElement', ['name' => 'type', 'label' => 'Flight type', 'options' => $type])
         @include('templates.tripDates')
         <div class="clearfix"></div>
         <div class="row col-12">

@@ -11,7 +11,9 @@ import axios from "axios";
             datePickerAction($(this));
         });
 
-        $body.on("click", "#add-stopover", addStopover);
+        $body.on("click", "#add-stopover", function () {
+            addStopover($(this));
+        });
 
         $body.on("click", ".remove-stopover", function () {
             removeStopover($(this));
@@ -75,16 +77,15 @@ function datePickerAction($this, e){
 async function changeFlightType($this){
     const $parent = $this.closest('.element-wrapper-type');
     const $inputChecked = $parent.find('input:checked');
+    $('#returnDate').remove();
     if($inputChecked.val() === 'multi-destination'){
-        await addStopover();
+        await addStopover($this);
         const subView = await axiosOperation('/axiosRequest/getAddStopoverBtn');
         $('.add-stopover-btn-wrap').html(subView);
         $('#nb-stopover').val(1);
     } else {
         if($inputChecked.val() === 'round-trip'){
             $('#trip-dates').append('<p id="returnDate" class="col-6">Return date: <input type="text" name="returnDate" class="trip-datepicker"/></p>')
-        } else {
-            $('#returnDate').remove();
         }
         $('#stopover-list-content').html('');
         $('.add-stopover-btn-wrap').html('');
@@ -92,22 +93,15 @@ async function changeFlightType($this){
     }
 }
 
-function hasRemoveBtnToFirstStopover(shouldHave = true){
-    if(shouldHave){
-        const subView = '<button type="button" class="close remove-stopover" aria-label="Close"><span class="" aria-hidden="true">x</span></button>'
-        $('#stopover-list-content .single-stopover-1 .select-wrapper').append(subView);
-    } else {
-        $('#stopover-list-content .single-stopover-1 .close.remove-stopover').remove();
-    }
-}
-
-async function addStopover(){
+async function addStopover($this){
+    const $form = $this.closest('form');
     const nbStopoverVal = parseInt($('#nb-stopover').val());
     if(nbStopoverVal < 5){
-        const subView = await axiosOperation('/axiosRequest/addStopover', {'nbStopover': nbStopoverVal});
-        $('#stopover-list-content').append(subView);
-        const newNb = nbStopoverVal + 1;
-        $('#nb-stopover').val(newNb);
+        let formData = {};
+        formData['formData'] = getFormDataObj($form);
+        const subView = await axiosOperation('/axiosRequest/addStopover', formData);
+        $('#stopover-list').replaceWith(subView);
+        const newNb = parseInt($('#nb-stopover').val());
         if(newNb >= 5){
             $("#add-stopover").addClass('disabled')
         }

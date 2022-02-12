@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Flight;
 use App\Models\FlightTrip;
+use App\Models\FlightType;
 use Illuminate\Http\Request;
 use App\Models\Airport;
 
@@ -12,7 +13,7 @@ class TripController extends Controller
     public function index()
     {
         $airports = Airport::getAirportSelectList();
-        $type = ['one-way' => 'One way', 'round-trip' => 'Round trip', 'multi-destination' => 'Multi destination'];
+        $type = FlightType::getFlightTypeList();
 
         return view('home', ['type' => $type, 'airports' => $airports]);
     }
@@ -25,9 +26,13 @@ class TripController extends Controller
     public function addStopover(Request $request)
     {
         $view = '';
-        $nbStopover = (int)$request->nbStopover;
+        $formData = RequestController::getFormDataParameters($request);
+        $nbStopover = (int)$formData['nb-stopover'];
         if($nbStopover <= 5){
-            $view = view('templates.newStopover', ['nbStopover' => $nbStopover]);
+            $airportList = Airport::getAirportList();
+            $stopoverArray = $nbStopover === 0 ? [] : $formData['stopover'];
+            $stopoverArray[] = array_key_first($airportList);
+            $view = view('templates.stopoverList', ['stopoverList' => $stopoverArray]);
         }
         return $view;
     }
@@ -73,13 +78,14 @@ class TripController extends Controller
 
         $flightTripSteps = self::buildFlightTripSteps($formData);
         if($flightTripSteps){
-            $flightTripArray = self::buildStraightFlight($flightTripSteps, $formData['departureDate'], true);
-
             $type = $formData['type'];
-            $returnFlightTrip = $type === 'round-trip' ? array_reverse($flightTripSteps) : [];
+            $allowCorrespondence = FlightType::allowCorrespondence($type);
+            $flightTripArray = self::buildStraightFlight($flightTripSteps, $formData['departureDate'], $allowCorrespondence);
+
+            $returnFlightTrip = FlightType::isRoundTrip($type) ? array_reverse($flightTripSteps) : [];
             $returnFlightTripArray = array();
             if($returnFlightTrip){
-                $returnFlightTripArray = self::buildStraightFlight($returnFlightTrip, $formData['returnDate'], true);
+                $returnFlightTripArray = self::buildStraightFlight($returnFlightTrip, $formData['returnDate'], $allowCorrespondence);
             }
 
             $flightTrip = new FlightTrip($flightTripArray, $returnFlightTripArray);
