@@ -34,30 +34,29 @@ class Flight extends Model
 
     public static function getFlightList()
     {
-        //AT:YUL-JFK (2h)
+        //AT:YUL-JFK
         $YUL_JFK = self::createFlight("AT","302","YUL","07:35","JFK","10:05",200.23);
         $JFK_YUL = self::createFlight("AT","302","JFK","11:30","YUL","19:11",220.63);
 
-        //AC:YUL-YVR (3h)
+        //AC:YUL-YVR
         $YUL_YVR = self::createFlight("AC","303","YUL","07:35","YVR","10:05",300.23);
         $YVR_YUL = self::createFlight("AC","303","YVR","11:30","YUL","19:11",330.63);
 
-        //AC:YYZ-JFK (4h)
+        //AC:YYZ-JFK
         $YYZ_JFK = self::createFlight("AC","304","YVZ","07:35","JFK","10:05",400.23);
         $JFK_YYZ = self::createFlight("AC","304","JFK","11:30","YVZ","19:11",420.63);
 
-        //AT:YUL-YVZ (5h)
+        //AT:YUL-YVZ
         $YUL_YYZ = self::createFlight("AT","305", "YUL", "13:30", "YVZ", "15:00", 500.50);
         $YYZ_YUL = self::createFlight("AT","305", "YVZ", "19:00", "YUL", "20:30", 510.00);
 
-        //AF:YUL-CDG (6h)
+        //AF:YUL-CDG
         $YUL_CDG = self::createFlight("AF","306", "YUL", "22:25", "CDG", "06:25", 600.00);
         $CDG_YUL = self::createFlight("AF","306", "CDG", "14:25", "YUL", "17:25", 605.60);
 
-        //AF:JFK-CDG (7h)
+        //AF:JFK-CDG
         $JFK_CDG = self::createFlight("AF","307","JFK","07:35","CDG","10:05",700.05);
         $CDG_JFK = self::createFlight("AF","307","CDG","11:30","JFK","19:11",720.00);
-
 
         return [
             'YUL_JFK' => $YUL_JFK,
@@ -131,14 +130,19 @@ class Flight extends Model
             }
         }
 
-        $departureDate = self::getDateTime($date, $this->departure_time, $departureDefinition->timezone);
-        $arrivalDate = self::getDateTime($date, $this->arrival_time, $arrivalDefinition->timezone);
+        $departureDateTime = self::getDateTime($date, $this->departure_time, $departureDefinition->timezone);
+        $arrivalDateTime = self::getDateTime($date, $this->arrival_time, $arrivalDefinition->timezone);
+        $isSameDay = $arrivalDateTime < $departureDateTime;
+        if($isSameDay){
+            $arrivalDateTime->modify('+1 day');
+        }
 
         $this->airlineDefinition = $airlineDefinition;
         $this->departureAirportDefinition = $departureDefinition;
         $this->arrivalAirportDefinition = $arrivalDefinition;
-        $this->departureDateTime = $departureDate;
-        $this->arrivalDateTime = $arrivalDate;
+        $this->departureDateTime = $departureDateTime;
+        $this->arrivalDateTime = $arrivalDateTime;
+        $this->setDuration();
 
         return $this;
     }
@@ -146,6 +150,24 @@ class Flight extends Model
     private static function getDateTime($date, $time, $timezone)
     {
         $dateTime = $date . ' ' . $time;
-        return new DateTime( $dateTime, new DateTimeZone($timezone) );
+        return (new DateTime( $dateTime, new DateTimeZone($timezone) ));
+    }
+
+    public static function getDateStr(DateTime $dateTime)
+    {
+        return $dateTime->format("l, F d Y");
+    }
+
+    public static function getTimeStr(DateTime $dateTime)
+    {
+        return $dateTime->format("H:m");
+    }
+
+    private function setDuration()
+    {
+        $interval = $this->departureDateTime->diff($this->arrivalDateTime);
+
+        $this->duration = $interval->format('%h hours');
+        $this->delayedDay = $interval->d;
     }
 }

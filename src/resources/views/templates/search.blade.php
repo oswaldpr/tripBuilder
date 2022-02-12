@@ -7,6 +7,7 @@
 @section('sectionWithTitle-content')
     <form id="search-trip-form" method="post">
         @csrf <!-- {{ csrf_field() }} -->
+        <div id="error-message" class="error text-center color-red"></div>
         @include('templates.elements.radioElement', ['name' => 'type', 'label' => 'Flight type', 'options' => $type])
         @include('templates.tripDates')
         <div class="clearfix"></div>

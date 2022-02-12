@@ -14,8 +14,13 @@ class FlightTrip
     public $totalPrice;
 
 
-    public function __construct($flightTripArray, $returnFlightTripArray = array())
+    public function __construct($flightTripArray = array(), $returnFlightTripArray = array())
     {
+        if(empty($flightTripArray) && empty($returnFlightTripArray)){
+            //No flight found
+            return null;
+        }
+
         $returnFlight = null;
         $straightFlight = new StraightFlightTrip($flightTripArray);
         $totalPrice = $straightFlight->price;

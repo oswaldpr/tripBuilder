@@ -9,6 +9,10 @@ $secondary-color: #FFF;
     width: 80%;
     margin: auto;
 
+    #error-message {
+        color: red;
+    }
+
     label {
         color: $primary-color;
     }
@@ -36,6 +40,13 @@ $secondary-color: #FFF;
         h3 {
             color: $primary-color;
             text-transform: uppercase;
+            text-align: center;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        h5.duration {
+            color: $primary-color;
             text-align: center;
             line-height: 1.5;
             margin: 0;
@@ -88,6 +99,9 @@ $secondary-color: #FFF;
     }
     #search-result-list {
         margin-top: 6%;
+        .label {
+            text-align: left;
+        }
         #result-departure, #result-return{
             margin-bottom: 6%;
         }
@@ -99,6 +113,14 @@ $secondary-color: #FFF;
             width: 55%;
             margin: 2% auto;
             background-color: lightgray;
+        }
+        .result-flight-step-content {
+            .single-info-title {
+                font-weight: 700;
+            }
+            .single-info-content {
+                padding-left: 10%;
+            }
         }
     }
 }

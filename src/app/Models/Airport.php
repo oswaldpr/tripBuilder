@@ -40,7 +40,7 @@ class Airport extends Model
         $JFK = self::createAirport("JFK", "JFK", "John F. Kennedy International",
             "New York","US","NY",40.639722,-73.778889,"America/New_York");
         $CDG = self::createAirport("CDG", "YMQ", "Charles de Gaulle International",
-            "Paris","FR","PA",49.009722,2.547778,"europe/paris");
+            "Paris","FR","PA",49.009722,2.547778,"Europe/Paris");
 
         return array(
             'YUL' => $YUL,

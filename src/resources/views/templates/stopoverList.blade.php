@@ -14,5 +14,5 @@ $airports = Airport::getAirportSelectList();
             <?php $nbStopover++; ?>
         @endforeach
     </div>
-    <input type="hidden" id="nb-stopover" value="<?php echo $nbStopover; ?>" name="nb-stopover">
+    <input type="hidden" id="nb_stopover" value="<?php echo $nbStopover; ?>" name="nb_stopover">
 </div>

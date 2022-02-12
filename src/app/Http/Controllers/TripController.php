@@ -27,7 +27,7 @@ class TripController extends Controller
     {
         $view = '';
         $formData = RequestController::getFormDataParameters($request);
-        $nbStopover = (int)$formData['nb-stopover'];
+        $nbStopover = (int)$formData['nb_stopover'];
         if($nbStopover <= 5){
             $airportList = Airport::getAirportList();
             $stopoverArray = $nbStopover === 0 ? [] : $formData['stopover'];
@@ -88,7 +88,9 @@ class TripController extends Controller
                 $returnFlightTripArray = self::buildStraightFlight($returnFlightTrip, $formData['returnDate'], $allowCorrespondence);
             }
 
-            $flightTrip = new FlightTrip($flightTripArray, $returnFlightTripArray);
+            if(!empty($flightTripArray)){
+                $flightTrip = new FlightTrip($flightTripArray, $returnFlightTripArray);
+            }
         }
 
         return view('templates.results', ['title' => 'Results', 'flightTrip' => $flightTrip]);
@@ -125,6 +127,8 @@ class TripController extends Controller
                     $flightIDDetail = Flight::query()->where('id', $flightOption->flightID)->first();
                     $flightTripArray[] = $flightIDDetail->buildAdditionalFields($date);
                 }
+            } else {
+                break;
             }
 
             $nextFlightIIndex = $arrivalIndex + 1;

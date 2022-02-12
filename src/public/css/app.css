@@ -3,6 +3,10 @@
   margin: auto;
 }
 
+#app-content #error-message {
+  color: red;
+}
+
 #app-content label {
   color: #292929;
 }
@@ -32,6 +36,13 @@
 #app-content .sectionWithTitle h3 {
   color: #292929;
   text-transform: uppercase;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+#app-content .sectionWithTitle h5.duration {
+  color: #292929;
   text-align: center;
   line-height: 1.5;
   margin: 0;
@@ -88,6 +99,10 @@
   margin-top: 6%;
 }
 
+#app-content #search-result-list .label {
+  text-align: left;
+}
+
 #app-content #search-result-list #result-departure,
 #app-content #search-result-list #result-return {
   margin-bottom: 6%;
@@ -102,6 +117,14 @@
   width: 55%;
   margin: 2% auto;
   background-color: lightgray;
+}
+
+#app-content #search-result-list .result-flight-step-content .single-info-title {
+  font-weight: 700;
+}
+
+#app-content #search-result-list .result-flight-step-content .single-info-content {
+  padding-left: 10%;
 }
 
 

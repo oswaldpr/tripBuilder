@@ -2262,7 +2262,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     });
     $body.on("click", "#searchFlight", function () {
       searchFlight($(this));
-    });
+    }); //Should trigger date picker element
+
+    $('#departureDate input').click();
   });
 })(jQuery); // SERVICE EXECUTION SECTION
 
@@ -2289,7 +2291,7 @@ function axiosOperation(serviceRoute) {
   });
 }
 
-function datePickerAction($this, e) {
+function datePickerAction($this) {
   var isDeparture = $this.attr('name') === 'departureDate';
   var minDate = 0;
   var maxDate = 365;
@@ -2305,17 +2307,19 @@ function datePickerAction($this, e) {
       var returnMonth = departureDate.getMonth() + 1;
       var returnYear = departureDate.getFullYear();
       var returnMaxYear = returnYear + 1;
-      minDate = new Date(returnDay, returnMonth, returnYear);
-      maxDate = new Date(returnDay, returnMonth, returnMaxYear);
+      minDate = new Date(returnMonth + '/' + returnDay + '/' + returnYear);
+      maxDate = new Date(returnMonth + '/' + returnDay + '/' + returnMaxYear);
     } else {
       openPicker = false;
-      alert('Please choose the departure date first');
+      var msgHtml = '<p><b>Error:</b> Please choose the departure date first</p>';
+      $('#error-message').html(msgHtml);
     }
   }
 
   if (openPicker) {
-    $this.datepicker({// minDate: minDate,
-      // maxDate: maxDate
+    $this.datepicker({
+      "minDate": minDate,
+      "maxDate": maxDate
     });
   }
 }
@@ -2350,18 +2354,24 @@ function _changeFlightType() {
           case 8:
             subView = _context.sent;
             $('.add-stopover-btn-wrap').html(subView);
-            $('#nb-stopover').val(1);
+            $('#nb_stopover').val(1);
             _context.next = 17;
             break;
 
           case 13:
             if ($inputChecked.val() === 'round-trip') {
               $('#trip-dates').append('<p id="returnDate" class="col-6">Return date: <input type="text" name="returnDate" class="trip-datepicker"/></p>');
+
+              if ($('#departureDate input').val()) {
+                //Only if already picked departure date
+                //Should trigger date picker element
+                $('#returnDate input').click();
+              }
             }
 
             $('#stopover-list-content').html('');
             $('.add-stopover-btn-wrap').html('');
-            $('#nb-stopover').val(0);
+            $('#nb_stopover').val(0);
 
           case 17:
           case "end":
@@ -2385,7 +2395,7 @@ function _addStopover() {
         switch (_context2.prev = _context2.next) {
           case 0:
             $form = $this.closest('form');
-            nbStopoverVal = parseInt($('#nb-stopover').val());
+            nbStopoverVal = parseInt($('#nb_stopover').val());
 
             if (!(nbStopoverVal < 5)) {
               _context2.next = 11;
@@ -2400,7 +2410,7 @@ function _addStopover() {
           case 7:
             subView = _context2.sent;
             $('#stopover-list').replaceWith(subView);
-            newNb = parseInt($('#nb-stopover').val());
+            newNb = parseInt($('#nb_stopover').val());
 
             if (newNb >= 5) {
               $("#add-stopover").addClass('disabled');
@@ -2454,7 +2464,7 @@ function getFormDataObj($this) {
   var $form = $this.closest('form');
   var formArray = $form.serializeArray();
   var formData = {};
-  $.map(formArray, function (n, i) {
+  $.map(formArray, function (n) {
     formData[n['name']] = n['value'];
   });
   return formData;
@@ -2466,22 +2476,32 @@ function searchFlight(_x4) {
 
 function _searchFlight() {
   _searchFlight = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4($this) {
-    var formData, subView;
+    var validDates, validAirports, formData, subView;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
+            $('#error-message').html('');
+            $('#search-result-list').html('');
+            validDates = validateDates();
+            validAirports = validateAirportList();
+
+            if (!(validDates && validAirports)) {
+              _context4.next = 10;
+              break;
+            }
+
             formData = getFormDataObj($this);
-            _context4.next = 3;
+            _context4.next = 8;
             return axiosOperation('/axiosRequest/searchFlight', {
               'formData': formData
             });
 
-          case 3:
+          case 8:
             subView = _context4.sent;
             $('#search-result-list').html(subView);
 
-          case 5:
+          case 10:
           case "end":
             return _context4.stop();
         }
@@ -2489,6 +2509,58 @@ function _searchFlight() {
     }, _callee4);
   }));
   return _searchFlight.apply(this, arguments);
+}
+
+function validateDates() {
+  var $typeChecked = $('.element-wrapper-type').find('input:checked');
+  var isRoundTrip = $typeChecked.val() === 'round-trip';
+  var hasDepartureDate = $('#departureDate input').val();
+  var hasReturnDate = isRoundTrip ? $('#returnDate input').val() : true;
+  var isValid = hasDepartureDate && hasReturnDate;
+
+  if (!isValid) {
+    var msgHtml = '<p><b>Error:</b> Please choose your flight(s) date(s).</p>';
+    $('#error-message').append(msgHtml);
+  }
+
+  return isValid;
+}
+
+function validateAirportList() {
+  var isValid = true;
+  var airportTripList = getAirportTripList();
+
+  for (var i = 0; i < airportTripList.length; i++) {
+    if (airportTripList[i] === airportTripList[i + 1]) {
+      isValid = false;
+    }
+  }
+
+  if (!isValid) {
+    var msgHtml = '<p><b>Error:</b> You can not choose the same airport in a row, please review your selection.</p>';
+    $('#error-message').append(msgHtml);
+  }
+
+  return isValid;
+}
+
+function getAirportTripList() {
+  var departure = $('.element-wrapper-departure_airport select').val();
+  var arrival = $('.element-wrapper-arrival_airport select').val();
+  var nbStopover = $('#nb_stopover').val();
+  var hasStopover = parseInt(nbStopover) > 0;
+  var airportTripList = [departure];
+
+  if (hasStopover) {
+    for (var i = 1; i <= nbStopover; i++) {
+      var selector = '.single-stopover-' + i + ' select';
+      var selectorValue = $(selector).val();
+      airportTripList.push(selectorValue);
+    }
+  }
+
+  airportTripList.push(arrival);
+  return airportTripList;
 }
 
 /***/ }),
