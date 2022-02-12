@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Flight;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +12,13 @@ class Airport extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['code', 'city_code', 'name', 'city', 'country_code', 'region_code', 'latitude', 'longitude', 'timezone'];
+
+    public function flights()
+    {
+        return $this->hasMany(Flight::class);
+    }
+
     public static function getAirportSelectList()
     {
         $list = self::getAirportList();
@@ -19,11 +27,6 @@ class Airport extends Model
             $selectList[$item->code] = $item->name;
         }
         return $selectList;
-    }
-
-    public function flight()
-    {
-        return $this->belongsTo(Flight::class);
     }
 
     public static function getAirportList()

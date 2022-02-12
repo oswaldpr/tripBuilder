@@ -1,10 +1,12 @@
 <?php
+use App\Models\FlightTrip;
 
 /** @var  array $type */
 /** @var  array $airports */
-/** @var  stdClass $trip */
+/** @var  FlightTrip $flightTrip */
 
-$trip = $trip ?? null;
+
+$flightTrip = $flightTrip ?? null;
 ?>
 @extends('templates.app')
 
@@ -13,8 +15,8 @@ $trip = $trip ?? null;
         <h1 class="text-center">Welcome</h1>
         @include('templates.search', ['title' => 'Search a flight trip', 'type' => $type, 'airports' => $airports])
         <div id="search-result-list">
-            @if($trip)
-            @include('templates.results', ['title' => 'Results', 'trip' => $trip])
+            @if($flightTrip)
+                @include('templates.results', ['title' => 'Results', 'flightTrip' => $flightTrip])
             @endif
         </div>
     </div>

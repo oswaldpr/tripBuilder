@@ -2251,6 +2251,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     $body.on("change", ".input-type", function () {
       changeFlightType($(this));
     });
+    $body.on("click", ".trip-datepicker", function () {
+      datePickerAction($(this));
+    });
     $body.on("click", "#add-stopover", addStopover);
     $body.on("click", ".remove-stopover", function () {
       removeStopover($(this));
@@ -2284,6 +2287,37 @@ function axiosOperation(serviceRoute) {
   });
 }
 
+function datePickerAction($this, e) {
+  var isDeparture = $this.attr('name') === 'departureDate';
+  var minDate = 0;
+  var maxDate = 365;
+  var openPicker = true;
+
+  if (!isDeparture) {
+    var departureVal = $('#departureDate input').val();
+
+    if (departureVal) {
+      var minDaysToComeBack = 2;
+      var departureDate = new Date(departureVal);
+      var returnDay = departureDate.getDate() + minDaysToComeBack;
+      var returnMonth = departureDate.getMonth() + 1;
+      var returnYear = departureDate.getFullYear();
+      var returnMaxYear = returnYear + 1;
+      minDate = new Date(returnDay, returnMonth, returnYear);
+      maxDate = new Date(returnDay, returnMonth, returnMaxYear);
+    } else {
+      openPicker = false;
+      alert('Please choose the departure date first');
+    }
+  }
+
+  if (openPicker) {
+    $this.datepicker({// minDate: minDate,
+      // maxDate: maxDate
+    });
+  }
+}
+
 function changeFlightType(_x) {
   return _changeFlightType.apply(this, arguments);
 }
@@ -2314,15 +2348,21 @@ function _changeFlightType() {
             subView = _context.sent;
             $('.add-stopover-btn-wrap').html(subView);
             $('#nb-stopover').val(1);
-            _context.next = 15;
+            _context.next = 16;
             break;
 
           case 12:
+            if ($inputChecked.val() === 'round-trip') {
+              $('#trip-dates').append('<p id="returnDate" class="col-6">Return date: <input type="text" name="returnDate" class="trip-datepicker"/></p>');
+            } else {
+              $('#returnDate').remove();
+            }
+
             $('#stopover-list-content').html('');
             $('.add-stopover-btn-wrap').html('');
             $('#nb-stopover').val(0);
 
-          case 15:
+          case 16:
           case "end":
             return _context.stop();
         }
@@ -2436,26 +2476,22 @@ function searchFlight(_x3) {
 
 function _searchFlight() {
   _searchFlight = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4($this) {
-    var $form, formData, subView;
+    var formData, subView;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            $form = $this.closest('form');
             formData = getFormDataObj($this);
-            debugger;
-            _context4.next = 5;
+            _context4.next = 3;
             return axiosOperation('/axiosRequest/searchFlight', {
               'formData': formData
             });
 
-          case 5:
+          case 3:
             subView = _context4.sent;
-            debugger;
-            $('#stopover-list').replaceWith(subView);
-            return _context4.abrupt("return", formData);
+            $('#search-result-list').html(subView);
 
-          case 9:
+          case 5:
           case "end":
             return _context4.stop();
         }

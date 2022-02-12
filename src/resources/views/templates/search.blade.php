@@ -8,6 +8,7 @@
     <form id="search-trip-form" method="post">
         @csrf <!-- {{ csrf_field() }} -->
         @include('templates.elements.radioElement', ['name' => 'type', 'label' => 'Flight type', 'options' => $type, 'selected' => 'one-way'])
+        @include('templates.tripDates')
         <div class="clearfix"></div>
         <div class="row col-12">
             <div class="airport-selection col-10">

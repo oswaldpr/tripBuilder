@@ -32,6 +32,14 @@ $secondary-color: #FFF;
             line-height: 1.5;
             margin: 0;
         }
+
+        h3 {
+            color: $primary-color;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.5;
+            margin: 0;
+        }
         .section-content {
             padding: 2% 5%;
         }
@@ -76,6 +84,21 @@ $secondary-color: #FFF;
             button {
                 margin: 0 5%;
             }
+        }
+    }
+    #search-result-list {
+        margin-top: 6%;
+        #result-departure, #result-return{
+            margin-bottom: 6%;
+        }
+        .search-result-list-content {
+            width: 70%;
+            margin: auto;
+        }
+        .result-single-flight {
+            width: 55%;
+            margin: 2% auto;
+            background-color: lightgray;
         }
     }
 }

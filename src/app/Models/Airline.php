@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use \App\Models\Flight;
 
 class Airline extends Model
 {
@@ -11,10 +12,11 @@ class Airline extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['code', 'name'];
 
-    public function flight()
+    public function flights()
     {
-        return $this->belongsTo(Flight::class);
+        return $this->hasMany(Flight::class);
     }
 
     public static function getAirlineList(){

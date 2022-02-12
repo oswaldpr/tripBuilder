@@ -13,52 +13,50 @@ class Flight extends Model
 
     public $timestamps = false;
 
-    /** @var  string $airline */
-    public $airline;
+    protected $fillable = ['airline', 'number', 'departure_airport', 'departure_time', 'arrival_airport', 'arrival_time', 'price'];
 
-    /** @var  string $number */
-    public $number;
 
-    /** @var  string $departure_airport */
-    public $departure_airport;
+    public function airlineDef()
+    {
+        return $this->belongsTo(Airline::class);
+    }
 
-    /** @var  string $departure_time */
-    public $departure_time;
+    public function departureAirport()
+    {
+        return $this->belongsTo(Airport::class);
+    }
 
-    /** @var  string $arrival_airport */
-    public $arrival_airport;
+    public function arrivalAirport()
+    {
+        return $this->belongsTo(Airport::class);
+    }
 
-    /** @var  string $arrival_time */
-    public $arrival_time;
-
-    /** @var  string $price */
-    public $price;
 
     public static function getFlightList()
     {
         //AT:YUL-JFK (2h)
-        $YUL_JFK = Flight::createFlight("AT","302","YUL","07:35","JFK","10:05",200.23);
-        $JFK_YUL = Flight::createFlight("AT","302","JFK","11:30","YUL","19:11",220.63);
+        $YUL_JFK = self::createFlight("AT","302","YUL","07:35","JFK","10:05",200.23);
+        $JFK_YUL = self::createFlight("AT","302","JFK","11:30","YUL","19:11",220.63);
 
         //AC:YUL-YVR (3h)
-        $YUL_YVR = Flight::createFlight("AC","303","YUL","07:35","YVR","10:05",300.23);
-        $YVR_YUL = Flight::createFlight("AC","303","YVR","11:30","YUL","19:11",330.63);
+        $YUL_YVR = self::createFlight("AC","303","YUL","07:35","YVR","10:05",300.23);
+        $YVR_YUL = self::createFlight("AC","303","YVR","11:30","YUL","19:11",330.63);
 
         //AC:YYZ-JFK (4h)
-        $YYZ_JFK = Flight::createFlight("AC","304","YVZ","07:35","JFK","10:05",400.23);
-        $JFK_YYZ = Flight::createFlight("AC","304","JFK","11:30","YVZ","19:11",420.63);
+        $YYZ_JFK = self::createFlight("AC","304","YVZ","07:35","JFK","10:05",400.23);
+        $JFK_YYZ = self::createFlight("AC","304","JFK","11:30","YVZ","19:11",420.63);
 
         //AT:YUL-YVZ (5h)
-        $YUL_YYZ = Flight::createFlight("AT","305", "YUL", "13:30", "YVZ", "15:00", 500.50);
-        $YYZ_YUL = Flight::createFlight("AT","305", "YVZ", "19:00", "YUL", "20:30", 510.00);
+        $YUL_YYZ = self::createFlight("AT","305", "YUL", "13:30", "YVZ", "15:00", 500.50);
+        $YYZ_YUL = self::createFlight("AT","305", "YVZ", "19:00", "YUL", "20:30", 510.00);
 
         //AF:YUL-CDG (6h)
-        $YUL_CDG = Flight::createFlight("AF","306", "YUL", "22:25", "CDG", "06:25", 600.00);
-        $CDG_YUL = Flight::createFlight("AF","306", "CDG", "14:25", "YUL", "17:25", 605.60);
+        $YUL_CDG = self::createFlight("AF","306", "YUL", "22:25", "CDG", "06:25", 600.00);
+        $CDG_YUL = self::createFlight("AF","306", "CDG", "14:25", "YUL", "17:25", 605.60);
 
         //AF:JFK-CDG (7h)
-        $JFK_CDG = Flight::createFlight("AF","307","JFK","07:35","CDG","10:05",700.05);
-        $CDG_JFK = Flight::createFlight("AF","307","CDG","11:30","JFK","19:11",720.00);
+        $JFK_CDG = self::createFlight("AF","307","JFK","07:35","CDG","10:05",700.05);
+        $CDG_JFK = self::createFlight("AF","307","CDG","11:30","JFK","19:11",720.00);
 
 
         return [
@@ -84,7 +82,7 @@ class Flight extends Model
         $airlines = array(
             'AC' => 1,
             'AF' => 3,
-            'AT' => 1,
+            'AT' => 2,
         );
         $airports = array(
             'YUL' => 3,
@@ -113,31 +111,41 @@ class Flight extends Model
         return $flight;
     }
 
-    public function airlines()
+    public function buildAdditionalFields($date)
     {
-        return $this->hasOne(Airline::class);
+        $airlineList = Airline::query()->get();
+        foreach ($airlineList as $airline) {
+            if($this->airline === $airline->code){
+                $airlineDefinition = $airline;
+                break;
+            }
+        }
+
+        $airportList = Airport::query()->get();
+        foreach ($airportList as $airport) {
+            if($this->departure_airport === $airport->code){
+                $departureDefinition = $airport;
+            }
+            if($this->arrival_airport === $airport->code){
+                $arrivalDefinition = $airport;
+            }
+        }
+
+        $departureDate = self::getDateTime($date, $this->departure_time, $departureDefinition->timezone);
+        $arrivalDate = self::getDateTime($date, $this->arrival_time, $arrivalDefinition->timezone);
+
+        $this->airlineDefinition = $airlineDefinition;
+        $this->departureAirportDefinition = $departureDefinition;
+        $this->arrivalAirportDefinition = $arrivalDefinition;
+        $this->departureDateTime = $departureDate;
+        $this->arrivalDateTime = $arrivalDate;
+
+        return $this;
     }
 
-    public function departureAirport()
+    private static function getDateTime($date, $time, $timezone)
     {
-        return $this->hasOne(Airport::class);
-    }
-
-    public function arrivalAirport()
-    {
-        return $this->hasOne(Airport::class);
-    }
-
-    private function getAdditionalFields()
-    {
-        $airline = $this->airline;
-        $departure_airport = $this->departure_airport;
-        $arrival_airport = $this->arrival_airport;
-
-    }
-
-    private static function getUTCDateTime($date, $time, $timezone)
-    {
-        return new DateTime( 'now', new DateTimeZone($timezone) );
+        $dateTime = $date . ' ' . $time;
+        return new DateTime( $dateTime, new DateTimeZone($timezone) );
     }
 }

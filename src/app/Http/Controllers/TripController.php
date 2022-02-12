@@ -68,36 +68,58 @@ class TripController extends Controller
 
     public static function searchFlight(Request $request)
     {
+        $flightTrip = null;
         $formData = RequestController::getFormDataParameters($request);
 
         $flightTripSteps = self::buildFlightTripSteps($formData);
-        $flightTripArray = self::buildStraightFlight($flightTripSteps);
+        if($flightTripSteps){
+            $flightTripArray = self::buildStraightFlight($flightTripSteps, $formData['departureDate'], true);
 
-        $type = $formData['type'];
-        $returnFlightTrip = $type === 'round-trip' ? array_reverse($flightTripSteps) : [];
-        $returnFlightTripArray = array();
-        if($returnFlightTrip){
-            $returnFlightTripArray = self::buildStraightFlight($returnFlightTrip);
+            $type = $formData['type'];
+            $returnFlightTrip = $type === 'round-trip' ? array_reverse($flightTripSteps) : [];
+            $returnFlightTripArray = array();
+            if($returnFlightTrip){
+                $returnFlightTripArray = self::buildStraightFlight($returnFlightTrip, $formData['returnDate'], true);
+            }
+
+            $flightTrip = new FlightTrip($flightTripArray, $returnFlightTripArray);
         }
 
-        $flightTrip = new FlightTrip($flightTripArray, $returnFlightTripArray);
-
-        return view('templates.results', ['trip' => $flightTrip]);
+        return view('templates.results', ['title' => 'Results', 'flightTrip' => $flightTrip]);
     }
 
-    private static function buildStraightFlight($flightTrip = array())
+    private static function buildStraightFlight($flightTrip, $date, $allowCorrespondences = false)
     {
         $flightTripArray = [];
         foreach($flightTrip as $index => $flight){
             $arrivalIndex = $index + 1;
             $thisDeparture = $flight;
             $thisArrival = $flightTrip[$arrivalIndex];
+
             $thisFlight = Flight::query()
                 ->where('departure_airport', $thisDeparture)
                 ->where('arrival_airport', $thisArrival)
                 ->first();
-            $thisFlightDetail = Flight::createFlight($thisFlight->airline, $thisFlight->number, $thisFlight->departure_airport, $thisFlight->departure_time, $thisFlight->arrival_airport, $thisFlight->arrival_time, $thisFlight->price);
-            $flightTripArray[] = $thisFlightDetail;
+
+            if($thisFlight){
+                $flightTripArray[] = $thisFlight->buildAdditionalFields($date);
+            } elseif($allowCorrespondences) {
+                $departureFlightList = Flight::query()->select('id', 'departure_airport', 'arrival_airport')
+                    ->where('departure_airport', $thisDeparture)
+                    ->get()->toArray();
+                $alternateDepList = self::getAlternateDepartureFlightID($departureFlightList);
+                $depList = self::buildAirportsFlightIDList($departureFlightList);
+                $arrivalFlightIDArr = Flight::query()->select('id', 'departure_airport', 'arrival_airport')
+                    ->where('arrival_airport', $thisArrival)
+                    ->whereIn('departure_airport', $alternateDepList)
+                    ->get()->toArray();
+                $arrList = self::buildAirportsFlightIDList($arrivalFlightIDArr);
+                $arrOptionList = self::builOptionTripList($depList, $arrList);
+                foreach ($arrOptionList as $flightOption) {
+                    $flightIDDetail = Flight::query()->where('id', $flightOption->flightID)->first();
+                    $flightTripArray[] = $flightIDDetail->buildAdditionalFields($date);
+                }
+            }
 
             $nextFlightIIndex = $arrivalIndex + 1;
             if(!isset($flightTrip[$nextFlightIIndex])){
@@ -106,5 +128,44 @@ class TripController extends Controller
         }
 
         return $flightTripArray;
+    }
+
+    private static function getAlternateDepartureFlightID($queryResult = array())
+    {
+        $idList = [];
+        foreach($queryResult as $flight){
+            $idList[$flight['id']] = $flight['arrival_airport'];
+        }
+
+        return $idList;
+    }
+
+    private static function buildAirportsFlightIDList($queryResult = array())
+    {
+        $currentList = [];
+        foreach($queryResult as $flight){
+            $trip = new \stdClass();
+            $trip->departure_airport = $flight['departure_airport'];
+            $trip->arrival_airport = $flight['arrival_airport'];
+            $trip->flightID = $flight['id'];
+            $currentList[] = $trip;
+        }
+
+        return $currentList;
+    }
+
+    private static function builOptionTripList($depList = array(), $arrList = array())
+    {
+        //Make sure each flight option has a valid correspondence airport
+        $tripOptionList = [];
+        foreach ($depList as $depFlight){
+            foreach ($arrList as $arrFlight){
+                if($arrFlight->departure_airport === $depFlight->arrival_airport){
+                    $tripOptionList[] = $depFlight;
+                    $tripOptionList[] = $arrFlight;
+                }
+            }
+        }
+        return $tripOptionList;
     }
 }

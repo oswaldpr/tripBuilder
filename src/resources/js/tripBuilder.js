@@ -7,6 +7,10 @@ import axios from "axios";
             changeFlightType($(this));
         });
 
+        $body.on("click", ".trip-datepicker", function () {
+            datePickerAction($(this));
+        });
+
         $body.on("click", "#add-stopover", addStopover);
 
         $body.on("click", ".remove-stopover", function () {
@@ -39,6 +43,35 @@ export function axiosOperation(serviceRoute, serviceData = '') {
         });
 }
 
+function datePickerAction($this, e){
+    const isDeparture = $this.attr('name') === 'departureDate';
+    let minDate = 0;
+    let maxDate = 365
+    let openPicker = true;
+    if(!isDeparture){
+        const departureVal = $('#departureDate input').val()
+        if(departureVal){
+            const minDaysToComeBack = 2;
+            const departureDate = new Date(departureVal);
+            const returnDay = departureDate.getDate() + minDaysToComeBack;
+            const returnMonth = departureDate.getMonth() + 1;
+            const returnYear = departureDate.getFullYear();
+            const returnMaxYear = returnYear + 1;
+            minDate = new Date(returnDay, returnMonth, returnYear);
+            maxDate = new Date(returnDay, returnMonth, returnMaxYear);
+        } else {
+            openPicker = false;
+            alert('Please choose the departure date first');
+        }
+    }
+    if(openPicker){
+        $this.datepicker({
+            // minDate: minDate,
+            // maxDate: maxDate
+        });
+    }
+}
+
 async function changeFlightType($this){
     const $parent = $this.closest('.element-wrapper-type');
     const $inputChecked = $parent.find('input:checked');
@@ -48,6 +81,11 @@ async function changeFlightType($this){
         $('.add-stopover-btn-wrap').html(subView);
         $('#nb-stopover').val(1);
     } else {
+        if($inputChecked.val() === 'round-trip'){
+            $('#trip-dates').append('<p id="returnDate" class="col-6">Return date: <input type="text" name="returnDate" class="trip-datepicker"/></p>')
+        } else {
+            $('#returnDate').remove();
+        }
         $('#stopover-list-content').html('');
         $('.add-stopover-btn-wrap').html('');
         $('#nb-stopover').val(0);
@@ -100,11 +138,7 @@ function getFormDataObj($this){
 }
 
 async function searchFlight($this){
-    const $form = $this.closest('form');
     let formData = getFormDataObj($this);
-    debugger
     const subView = await axiosOperation('/axiosRequest/searchFlight', {'formData': formData});
-    debugger
-    $('#stopover-list').replaceWith(subView);
-    return formData;
+    $('#search-result-list').html(subView);
 }

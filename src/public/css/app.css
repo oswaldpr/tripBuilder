@@ -29,6 +29,14 @@
   margin: 0;
 }
 
+#app-content .sectionWithTitle h3 {
+  color: #292929;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
 #app-content .sectionWithTitle .section-content {
   padding: 2% 5%;
 }
@@ -74,6 +82,26 @@
 
 #app-content #search-trip-form .search-trip-submit-button-group button {
   margin: 0 5%;
+}
+
+#app-content #search-result-list {
+  margin-top: 6%;
+}
+
+#app-content #search-result-list #result-departure,
+#app-content #search-result-list #result-return {
+  margin-bottom: 6%;
+}
+
+#app-content #search-result-list .search-result-list-content {
+  width: 70%;
+  margin: auto;
+}
+
+#app-content #search-result-list .result-single-flight {
+  width: 55%;
+  margin: 2% auto;
+  background-color: lightgray;
 }
 
 
